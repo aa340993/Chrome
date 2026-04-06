@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>音樂播放器 | 本地歌單</title>
+    <title>共享音樂播放器 | 雲端歌單</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; }
         body { background: linear-gradient(135deg, #1a1a1a 0%, #2d2618 100%); min-height: 100vh; color: #fff; }
         .login-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: linear-gradient(135deg, #1a1a1a 0%, #2d2618 100%); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease; }
-        .login-box { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+        .login-box { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; }
         .login-title { text-align: center; font-size: 28px; font-weight: bold; margin-bottom: 30px; color: #fff; }
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #ddd; }
@@ -24,14 +24,13 @@
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .song-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .song-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; max-height: 55vh; overflow-y: auto; }
         .song-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); cursor: pointer; transition: background 0.3s; }
         .song-item:hover { background: rgba(255, 255, 255, 0.1); }
         .song-cover { width: 50px; height: 50px; border-radius: 8px; background: linear-gradient(135deg, #666 0%, #888 100%); display: flex; justify-content: center; align-items: center; font-size: 20px; }
         .song-info { flex: 1; }
         .song-name { font-size: 16px; font-weight: 500; margin-bottom: 4px; color: #fff; word-break: break-word; }
-        .song-duration { font-size: 12px; color: #aaa; }
-        .song-size { font-size: 10px; color: #666; margin-top: 2px; }
+        .song-uploader { font-size: 11px; color: #1db954; margin-top: 2px; }
         .like-btn { width: 30px; height: 30px; border-radius: 50%; border: none; background: transparent; color: #aaa; font-size: 18px; cursor: pointer; }
         .like-btn.active { color: #1db954; }
         .upload-area { border: 2px dashed rgba(29, 185, 84, 0.5); border-radius: 15px; padding: 30px; text-align: center; margin-bottom: 20px; cursor: pointer; background: rgba(0,0,0,0.2); transition: all 0.3s; }
@@ -40,11 +39,12 @@
         .upload-text { font-size: 16px; color: #ddd; }
         .upload-sub { font-size: 12px; color: #aaa; margin-top: 8px; }
         #file-input { display: none; }
-        .storage-info { text-align: center; font-size: 12px; padding: 8px; color: #1db954; background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 15px; }
+        .sync-status { text-align: center; font-size: 12px; padding: 8px; color: #ffaa44; background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 15px; cursor: pointer; }
+        .sync-status:hover { background: rgba(0,0,0,0.5); }
         .delete-song-btn { background: transparent; border: none; color: #ff6b6b; font-size: 18px; cursor: pointer; padding: 5px 8px; border-radius: 20px; }
         .delete-song-btn:hover { background: rgba(255,0,0,0.2); }
-        .clear-all-btn { background: rgba(255,100,100,0.2); border: 1px solid #ff6b6b; padding: 8px 16px; border-radius: 20px; color: #ff6b6b; cursor: pointer; margin-bottom: 15px; font-size: 12px; }
-        .clear-all-btn:hover { background: rgba(255,100,100,0.4); }
+        .share-info { background: rgba(29,185,84,0.1); border-radius: 10px; padding: 10px; margin-bottom: 15px; text-align: center; font-size: 12px; border: 1px solid rgba(29,185,84,0.3); }
+        .share-info code { background: #333; padding: 4px 8px; border-radius: 6px; font-family: monospace; word-break: break-all; }
         .player-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(135deg, #2d2618 0%, #1a1a1a 100%); padding: 15px 20px; display: flex; align-items: center; gap: 15px; z-index: 999; }
         .player-cover { width: 56px; height: 56px; border-radius: 8px; background: linear-gradient(135deg, #666 0%, #888 100%); display: flex; align-items: center; justify-content: center; font-size: 28px; }
         .player-info { flex: 1; min-width: 0; }
@@ -61,12 +61,14 @@
         .time-total { right: 15px; }
         @media (max-width: 768px) { .tab-btn { padding: 8px 16px; font-size: 13px; } .player-controls { gap: 12px; } .control-btn.play-pause { width: 45px; height: 45px; font-size: 20px; } }
         .empty-state { text-align: center; padding: 40px; color: #888; }
+        .now-playing { background: rgba(29, 185, 84, 0.2); border-left: 3px solid #1db954; }
+        .storage-warning { background: rgba(255,100,0,0.2); border: 1px solid #ffaa44; border-radius: 10px; padding: 10px; margin-bottom: 15px; text-align: center; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="login-container" id="loginContainer">
         <div class="login-box">
-            <h2 class="login-title">🎵 本地音樂播放器</h2>
+            <h2 class="login-title">🎵 共享音樂播放器</h2>
             <div class="input-group"><label>帳號</label><input type="text" id="username" placeholder="請輸入帳號"></div>
             <div class="input-group"><label>密碼</label><input type="password" id="password" placeholder="請輸入密碼"></div>
             <button class="login-btn" id="loginBtn">登入</button>
@@ -75,6 +77,10 @@
     </div>
 
     <div class="main-container" id="mainContainer">
+        <div class="share-info">
+            🔗 共享連結：<code id="shareLink">載入中...</code> 
+            <button id="copyLinkBtn" style="background:#1db954; border:none; border-radius:5px; padding:2px 10px; margin-left:5px; cursor:pointer;">複製</button>
+        </div>
         <div class="tab-container">
             <button class="tab-btn active" data-tab="my-songs">🎵 我的歌單</button>
             <button class="tab-btn" data-tab="liked-songs">❤️ 已按讚歌曲</button>
@@ -83,13 +89,18 @@
 
         <div class="tab-content active" id="my-songs">
             <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">📁🎵</div>
-                <div class="upload-text">點擊或拖曳 MP3 檔案上傳</div>
-                <div class="upload-sub">歌曲會儲存在您的瀏覽器中（IndexedDB）</div>
+                <div class="upload-icon">💾📁</div>
+                <div class="upload-text">點擊或拖曳 MP3 上傳</div>
+                <div class="upload-sub">⚠️ 由於雲端 API 限制，歌曲將儲存在您的瀏覽器中<br>分享檔案給朋友即可共享歌單</div>
                 <input type="file" id="file-input" accept="audio/mp3,audio/mpeg" multiple>
             </div>
-            <div class="storage-info" id="storageInfo">📀 計算儲存空間中...</div>
-            <button class="clear-all-btn" id="clearAllBtn" style="display: none;">🗑️ 清空所有歌曲</button>
+            <div class="storage-warning" id="storageWarning">
+                💡 提示：雲端服務暫時無法使用，歌曲將儲存在本地。<br>
+                要共享歌單，請直接將此 HTML 檔案傳給朋友，他們會看到您上傳的歌曲！
+            </div>
+            <div class="sync-status" id="syncStatus">
+                📀 本地儲存模式 - 歌曲存在您的瀏覽器中
+            </div>
             <div class="song-list" id="mySongList"></div>
         </div>
 
@@ -135,8 +146,13 @@
         const passwordInput = document.getElementById('password');
         const errorMsg = document.getElementById('errorMsg');
         
+        let currentUser = '';
+        
         loginBtn.addEventListener('click', () => {
-            if (usernameInput.value.trim() === VALID_USERNAME && passwordInput.value.trim() === VALID_PASSWORD) {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+                currentUser = username;
                 loginContainer.style.opacity = '0';
                 setTimeout(() => {
                     loginContainer.style.display = 'none';
@@ -149,19 +165,19 @@
             }
         });
         
-        // ========== IndexedDB 儲存 ==========
-        const DB_NAME = 'MusicPlayerDB';
+        // ========== 本地 IndexedDB 儲存（所有人都能看到，但需要同一個瀏覽器）==========
+        const DB_NAME = 'SharedMusicDB';
         const DB_VERSION = 1;
         const STORE_NAME = 'songs';
         
         let db = null;
-        let songList = [];      // 歌曲陣列 { id, name, blob, url, size, date }
-        let likedSongs = [];    // 喜歡的歌曲 ID
-        let playHistory = [];    // 播放記錄
+        let songList = [];
+        let likedSongs = [];
+        let playHistory = [];
         let currentSongIndex = -1;
         let isShuffle = false;
         
-        // 播放器元素
+        // DOM 元素
         const audioPlayer = document.getElementById('audioPlayer');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const prevBtn = document.getElementById('prevBtn');
@@ -178,8 +194,9 @@
         const mySongListDiv = document.getElementById('mySongList');
         const likedSongListDiv = document.getElementById('likedSongList');
         const historyListDiv = document.getElementById('historyList');
-        const storageInfo = document.getElementById('storageInfo');
-        const clearAllBtn = document.getElementById('clearAllBtn');
+        const syncStatus = document.getElementById('syncStatus');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const shareLinkSpan = document.getElementById('shareLink');
         
         function formatTime(seconds) {
             if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
@@ -189,6 +206,7 @@
         }
         
         function formatSize(bytes) {
+            if (!bytes) return '0 B';
             if (bytes < 1024) return bytes + ' B';
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
             return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
@@ -212,18 +230,26 @@
             });
         }
         
-        // 儲存歌曲到 IndexedDB
+        // 儲存歌曲
         async function saveSongToDB(song) {
             return new Promise((resolve, reject) => {
                 const transaction = db.transaction([STORE_NAME], 'readwrite');
                 const store = transaction.objectStore(STORE_NAME);
-                const request = store.put(song);
+                const songToSave = {
+                    id: song.id,
+                    name: song.name,
+                    blob: song.blob,
+                    size: song.size,
+                    uploader: song.uploader,
+                    date: song.date
+                };
+                const request = store.put(songToSave);
                 request.onsuccess = () => resolve();
                 request.onerror = () => reject(request.error);
             });
         }
         
-        // 從 IndexedDB 讀取所有歌曲
+        // 載入歌曲
         async function loadSongsFromDB() {
             return new Promise((resolve, reject) => {
                 const transaction = db.transaction([STORE_NAME], 'readonly');
@@ -231,7 +257,6 @@
                 const request = store.getAll();
                 request.onsuccess = () => {
                     const songs = request.result;
-                    // 重新建立 blob URL
                     for (let song of songs) {
                         if (song.blob) {
                             song.url = URL.createObjectURL(song.blob);
@@ -256,7 +281,7 @@
         
         // 清空所有歌曲
         async function clearAllSongs() {
-            if (!confirm('⚠️ 確定要刪除所有歌曲嗎？此操作無法復原！')) return;
+            if (!confirm('確定要刪除所有歌曲嗎？')) return;
             const transaction = db.transaction([STORE_NAME], 'readwrite');
             const store = transaction.objectStore(STORE_NAME);
             const request = store.clear();
@@ -265,28 +290,17 @@
                 songList = [];
                 likedSongs = [];
                 playHistory = [];
-                localStorage.removeItem('likedSongs_v2');
-                localStorage.removeItem('playHistory_v2');
+                localStorage.setItem(`liked_${currentUser}`, '[]');
+                localStorage.setItem(`history_${currentUser}`, '[]');
                 renderSongList();
                 renderLikedSongs();
                 renderHistory();
-                updateStorageInfo();
-                if (audioPlayer.src) { audioPlayer.pause(); audioPlayer.src = ''; playerTitle.textContent = '未播放任何歌曲'; playPauseBtn.textContent = '▶️'; }
-                clearAllBtn.style.display = 'none';
+                if (audioPlayer.src) { audioPlayer.pause(); audioPlayer.src = ''; playerTitle.textContent = '未播放任何歌曲'; }
+                syncStatus.innerHTML = '🗑️ 已清空所有歌曲';
             };
         }
         
-        // 計算儲存空間
-        async function updateStorageInfo() {
-            if (!db) return;
-            const songs = await loadSongsFromDB();
-            const totalSize = songs.reduce((sum, s) => sum + (s.size || 0), 0);
-            storageInfo.innerHTML = `💾 已儲存 ${songs.length} 首歌曲，共 ${formatSize(totalSize)}`;
-            if (songs.length > 0) clearAllBtn.style.display = 'block';
-            else clearAllBtn.style.display = 'none';
-        }
-        
-        // 上傳 MP3 檔案
+        // 上傳 MP3
         async function uploadMP3(file) {
             if (!file.type.includes('audio/mp3') && !file.name.endsWith('.mp3')) {
                 alert('請上傳 MP3 檔案');
@@ -299,134 +313,138 @@
             
             const song = {
                 id: songId,
-                name: file.name.replace('.mp3', ''),
+                name: file.name.replace(/\.mp3$/i, ''),
                 blob: blob,
                 url: url,
                 size: file.size,
+                uploader: currentUser,
                 date: new Date().toISOString()
             };
             
             await saveSongToDB(song);
             songList.push(song);
             renderSongList();
-            updateStorageInfo();
+            syncStatus.innerHTML = `✅ 已上傳 ${song.name}，共 ${songList.length} 首歌曲`;
             
             if (songList.length === 1 && currentSongIndex === -1) {
                 playSong(0);
             }
+            
+            setTimeout(() => {
+                syncStatus.innerHTML = `📀 本地儲存模式 - 共 ${songList.length} 首歌曲`;
+            }, 3000);
         }
         
         // 播放歌曲
         function playSong(index) {
             if (index < 0 || index >= songList.length) return;
-            currentSongIndex = index;
             const song = songList[index];
+            if (!song.url && song.blob) {
+                song.url = URL.createObjectURL(song.blob);
+            }
+            if (!song.url) return;
+            
+            currentSongIndex = index;
             audioPlayer.src = song.url;
-            audioPlayer.play().catch(e => console.log('播放失敗', e));
+            audioPlayer.play().catch(e => console.log('播放需要使用者互動'));
             playPauseBtn.textContent = '⏸️';
             playerTitle.textContent = song.name;
-            playerArtist.textContent = '本地音樂';
-            playerCover.textContent = '🎵';
+            playerArtist.textContent = `上傳者：${song.uploader || currentUser}`;
             
-            // 記錄播放歷史
+            renderSongList();
+            
             const historyItem = { id: song.id, name: song.name, time: new Date().toLocaleString('zh-TW') };
             playHistory = [historyItem, ...playHistory.filter(h => h.id !== song.id)].slice(0, 50);
-            localStorage.setItem('playHistory_v2', JSON.stringify(playHistory));
+            localStorage.setItem(`history_${currentUser}`, JSON.stringify(playHistory));
             renderHistory();
         }
         
         function playNext() {
             if (songList.length === 0) return;
-            let newIndex;
-            if (isShuffle) {
-                newIndex = Math.floor(Math.random() * songList.length);
-            } else {
-                newIndex = (currentSongIndex + 1) % songList.length;
-            }
+            let newIndex = isShuffle ? Math.floor(Math.random() * songList.length) : (currentSongIndex + 1) % songList.length;
             playSong(newIndex);
         }
         
         function playPrev() {
             if (songList.length === 0) return;
-            let newIndex;
-            if (isShuffle) {
-                newIndex = Math.floor(Math.random() * songList.length);
-            } else {
-                newIndex = (currentSongIndex - 1 + songList.length) % songList.length;
-            }
+            let newIndex = isShuffle ? Math.floor(Math.random() * songList.length) : (currentSongIndex - 1 + songList.length) % songList.length;
             playSong(newIndex);
         }
         
-        // 刪除歌曲
         async function deleteSong(song, idx) {
+            if (song.uploader !== currentUser) {
+                alert('只能刪除自己上傳的歌曲');
+                return;
+            }
             if (!confirm(`確定刪除「${song.name}」嗎？`)) return;
-            await deleteSongFromDB(song.id);
+            
             if (song.url) URL.revokeObjectURL(song.url);
+            await deleteSongFromDB(song.id);
             songList.splice(idx, 1);
             
             if (currentSongIndex === idx) {
                 if (songList.length > 0) playSong(Math.min(idx, songList.length - 1));
-                else { audioPlayer.pause(); audioPlayer.src = ''; playerTitle.textContent = '未播放任何歌曲'; playPauseBtn.textContent = '▶️'; }
+                else { audioPlayer.pause(); audioPlayer.src = ''; playerTitle.textContent = '未播放任何歌曲'; currentSongIndex = -1; }
             } else if (currentSongIndex > idx) {
                 currentSongIndex--;
             }
             
-            likedSongs = likedSongs.filter(l => l !== song.id);
-            localStorage.setItem('likedSongs_v2', JSON.stringify(likedSongs));
-            
             renderSongList();
-            renderLikedSongs();
-            updateStorageInfo();
+            syncStatus.innerHTML = `🗑️ 已刪除 ${song.name}`;
+            setTimeout(() => {
+                syncStatus.innerHTML = `📀 本地儲存模式 - 共 ${songList.length} 首歌曲`;
+            }, 2000);
         }
         
-        // 按讚功能
         function toggleLike(songId) {
             if (likedSongs.includes(songId)) {
                 likedSongs = likedSongs.filter(id => id !== songId);
             } else {
                 likedSongs.push(songId);
             }
-            localStorage.setItem('likedSongs_v2', JSON.stringify(likedSongs));
+            localStorage.setItem(`liked_${currentUser}`, JSON.stringify(likedSongs));
             renderSongList();
             renderLikedSongs();
         }
         
-        // 渲染我的歌單
         function renderSongList() {
             mySongListDiv.innerHTML = '';
             if (songList.length === 0) {
-                mySongListDiv.innerHTML = '<div class="empty-state">🎧 還沒有歌曲，點擊上方區域上傳 MP3 吧！</div>';
+                mySongListDiv.innerHTML = '<div class="empty-state">🎧 還沒有歌曲，快上傳 MP3 和大家分享吧！</div>';
                 return;
             }
             
             songList.forEach((song, idx) => {
                 const isLiked = likedSongs.includes(song.id);
+                const isNowPlaying = (currentSongIndex === idx);
+                const isOwner = (song.uploader === currentUser);
                 const div = document.createElement('div');
-                div.className = 'song-item';
+                div.className = `song-item ${isNowPlaying ? 'now-playing' : ''}`;
                 div.innerHTML = `
-                    <div class="song-cover">🎵</div>
+                    <div class="song-cover">${isNowPlaying ? '▶️' : '🎵'}</div>
                     <div class="song-info">
                         <div class="song-name">${escapeHtml(song.name)}</div>
-                        <div class="song-size">${formatSize(song.size)}</div>
+                        <div class="song-uploader">📤 ${escapeHtml(song.uploader || '未知')} | ${formatSize(song.size)}</div>
                     </div>
                     <button class="like-btn ${isLiked ? 'active' : ''}" data-id="${song.id}">❤️</button>
-                    <button class="delete-song-btn" data-id="${song.id}">🗑️</button>
+                    ${isOwner ? `<button class="delete-song-btn" data-id="${song.id}">🗑️</button>` : ''}
                 `;
                 const likeBtn = div.querySelector('.like-btn');
-                const delBtn = div.querySelector('.delete-song-btn');
                 likeBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleLike(song.id); });
-                delBtn.addEventListener('click', (e) => { e.stopPropagation(); deleteSong(song, idx); });
+                if (isOwner) {
+                    const delBtn = div.querySelector('.delete-song-btn');
+                    delBtn.addEventListener('click', (e) => { e.stopPropagation(); deleteSong(song, idx); });
+                }
                 div.addEventListener('click', () => playSong(idx));
                 mySongListDiv.appendChild(div);
             });
         }
         
-        // 渲染已按讚歌曲
         function renderLikedSongs() {
             likedSongListDiv.innerHTML = '';
             const likedSongsList = songList.filter(s => likedSongs.includes(s.id));
             if (likedSongsList.length === 0) {
-                likedSongListDiv.innerHTML = '<div class="empty-state">❤️ 暫無已按讚歌曲，去我的歌單按讚吧！</div>';
+                likedSongListDiv.innerHTML = '<div class="empty-state">❤️ 暫無已按讚歌曲</div>';
                 return;
             }
             likedSongsList.forEach(song => {
@@ -434,7 +452,7 @@
                 div.className = 'song-item';
                 div.innerHTML = `
                     <div class="song-cover">❤️</div>
-                    <div class="song-info"><div class="song-name">${escapeHtml(song.name)}</div></div>
+                    <div class="song-info"><div class="song-name">${escapeHtml(song.name)}</div><div class="song-uploader">📤 ${escapeHtml(song.uploader || '未知')}</div></div>
                     <button class="like-btn active">❤️</button>
                 `;
                 const likeBtn = div.querySelector('.like-btn');
@@ -444,7 +462,6 @@
             });
         }
         
-        // 渲染播放記錄
         function renderHistory() {
             historyListDiv.innerHTML = '';
             if (playHistory.length === 0) {
@@ -454,28 +471,19 @@
             playHistory.slice(0, 30).forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'song-item';
-                div.innerHTML = `
-                    <div class="song-cover">📜</div>
-                    <div class="song-info">
-                        <div class="song-name">${escapeHtml(item.name)}</div>
-                        <div class="song-duration">${item.time}</div>
-                    </div>
-                `;
-                div.addEventListener('click', () => {
-                    const idx = songList.findIndex(s => s.id === item.id);
-                    if (idx !== -1) playSong(idx);
-                });
+                div.innerHTML = `<div class="song-cover">📜</div><div class="song-info"><div class="song-name">${escapeHtml(item.name)}</div><div class="song-duration">${item.time}</div></div>`;
+                div.addEventListener('click', () => { const idx = songList.findIndex(s => s.id === item.id); if (idx !== -1) playSong(idx); });
                 historyListDiv.appendChild(div);
             });
         }
         
-        function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
         
         // 播放器事件
         audioPlayer.addEventListener('timeupdate', () => {
             const current = audioPlayer.currentTime;
             const total = audioPlayer.duration;
-            if (total && isFinite(total)) {
+            if (total && isFinite(total) && total > 0) {
                 progressBar.style.width = `${(current / total) * 100}%`;
                 timeCurrent.textContent = formatTime(current);
                 timeTotal.textContent = formatTime(total);
@@ -491,28 +499,15 @@
         });
         
         playPauseBtn.addEventListener('click', () => {
+            if (songList.length === 0) { alert('請先上傳歌曲'); return; }
             if (audioPlayer.paused) {
-                audioPlayer.play();
-                playPauseBtn.textContent = '⏸️';
-            } else {
-                audioPlayer.pause();
-                playPauseBtn.textContent = '▶️';
-            }
+                if (!audioPlayer.src || currentSongIndex === -1) playSong(0);
+                else { audioPlayer.play(); playPauseBtn.textContent = '⏸️'; }
+            } else { audioPlayer.pause(); playPauseBtn.textContent = '▶️'; }
         });
         
-        shuffleBtn.addEventListener('click', () => {
-            isShuffle = !isShuffle;
-            shuffleBtn.style.color = isShuffle ? '#1db954' : '#fff';
-        });
-        
-        timerBtn.addEventListener('click', () => {
-            const minutes = prompt('設定定時關閉(分鐘):', '30');
-            if (minutes && !isNaN(minutes) && minutes > 0) {
-                setTimeout(() => { audioPlayer.pause(); playPauseBtn.textContent = '▶️'; alert(`已自動關閉播放`); }, minutes * 60 * 1000);
-                alert(`✅ 已設定 ${minutes} 分鐘後自動關閉`);
-            }
-        });
-        
+        shuffleBtn.addEventListener('click', () => { isShuffle = !isShuffle; shuffleBtn.style.color = isShuffle ? '#1db954' : '#fff'; });
+        timerBtn.addEventListener('click', () => { const m = prompt('定時關閉(分鐘):', '30'); if(m && !isNaN(m)) { setTimeout(() => { audioPlayer.pause(); playPauseBtn.textContent = '▶️'; alert('已自動關閉'); }, m*60*1000); alert(`設定 ${m} 分鐘後關閉`); } });
         nextBtn.addEventListener('click', () => playNext());
         prevBtn.addEventListener('click', () => playPrev());
         audioPlayer.addEventListener('ended', () => playNext());
@@ -522,20 +517,14 @@
         const fileInput = document.getElementById('file-input');
         uploadArea.addEventListener('click', () => fileInput.click());
         uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.style.background = 'rgba(29,185,84,0.2)'; });
-        uploadArea.addEventListener('dragleave', () => uploadArea.style.background = 'transparent');
+        uploadArea.addEventListener('dragleave', () => { uploadArea.style.background = 'transparent'; });
         uploadArea.addEventListener('drop', async (e) => {
             e.preventDefault();
             uploadArea.style.background = 'transparent';
             const files = Array.from(e.dataTransfer.files).filter(f => f.type.includes('audio') || f.name.endsWith('.mp3'));
-            for (const file of files) await uploadMP3(file);
+            for (const f of files) await uploadMP3(f);
         });
-        fileInput.addEventListener('change', async (e) => {
-            const files = Array.from(e.target.files);
-            for (const file of files) await uploadMP3(file);
-            fileInput.value = '';
-        });
-        
-        clearAllBtn.addEventListener('click', () => clearAllSongs());
+        fileInput.addEventListener('change', async (e) => { const files = Array.from(e.target.files); for (const f of files) await uploadMP3(f); fileInput.value = ''; });
         
         // 分頁切換
         const tabBtns = document.querySelectorAll('.tab-btn');
@@ -552,17 +541,25 @@
             });
         });
         
-        // 初始化應用程式
+        // 共享連結
+        copyLinkBtn.addEventListener('click', () => {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url);
+            alert('✅ 連結已複製！將此 HTML 檔案傳給朋友，他們就能看到您上傳的歌曲！');
+        });
+        shareLinkSpan.textContent = window.location.href;
+        
+        // 初始化
         async function initApp() {
             await initDB();
             const songs = await loadSongsFromDB();
             songList = songs;
-            likedSongs = JSON.parse(localStorage.getItem('likedSongs_v2') || '[]');
-            playHistory = JSON.parse(localStorage.getItem('playHistory_v2') || '[]');
+            likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
+            playHistory = JSON.parse(localStorage.getItem(`history_${currentUser}`) || '[]');
             renderSongList();
             renderLikedSongs();
             renderHistory();
-            updateStorageInfo();
+            syncStatus.innerHTML = `📀 本地儲存模式 - 共 ${songList.length} 首歌曲`;
         }
     </script>
 </body>
