@@ -63,8 +63,6 @@
         @media (max-width: 768px) { .tab-btn { padding: 8px 16px; font-size: 13px; } .player-controls { gap: 12px; } .control-btn.play-pause { width: 45px; height: 45px; font-size: 20px; } }
         .empty-state { text-align: center; padding: 40px; color: #888; }
         .now-playing { background: rgba(29, 185, 84, 0.2); border-left: 3px solid #1db954; }
-        .setup-guide { background: rgba(29,185,84,0.2); border-radius: 10px; padding: 15px; margin-bottom: 15px; font-size: 13px; }
-        .setup-guide a { color: #1db954; }
     </style>
 </head>
 <body>
@@ -79,17 +77,9 @@
     </div>
 
     <div class="main-container" id="mainContainer">
-        <div class="setup-guide" id="setupGuide" style="display:none;">
-            ⚠️ 請先設定 Supabase 連線<br>
-            1. 到 <a href="https://supabase.com" target="_blank">supabase.com</a> 註冊並建立專案<br>
-            2. 在 SQL Editor 執行 CREATE TABLE 指令<br>
-            3. 在 Settings → API 複製 URL 和 anon key<br>
-            4. 點下方「儲存設定」按鈕
-        </div>
         <div class="share-info">
             🔗 共享連結：<code id="shareLink">載入中...</code> 
             <button id="copyLinkBtn" style="background:#1db954; border:none; border-radius:5px; padding:2px 10px; margin-left:5px; cursor:pointer;">複製</button>
-            <button id="configBtn" style="background:#ffaa44; border:none; border-radius:5px; padding:2px 10px; margin-left:5px; cursor:pointer;">⚙️ 設定 Supabase</button>
         </div>
         <div class="tab-container">
             <button class="tab-btn active" data-tab="my-songs">🎵 我的歌單</button>
@@ -141,7 +131,7 @@
     <audio id="audioPlayer"></audio>
 
     <script>
-        // 登入驗證
+        // ========== 登入驗證 ==========
         const VALID_USERNAME = 'lin0525';
         const VALID_PASSWORD = 'aa340993';
         
@@ -171,9 +161,9 @@
             }
         });
         
-        // ========== Supabase 設定 ==========
-        let supabaseUrl = localStorage.getItem('supabase_url') || '';
-        let supabaseKey = localStorage.getItem('supabase_key') || '';
+        // ========== Supabase 設定（已寫入你的資訊）==========
+        const SUPABASE_URL = 'https://sdegbocjfldipmmzsevf.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable__2fgQaCZF836qzYpyQAaEA_Vl7SRjom';
         
         let songList = [];
         let likedSongs = [];
@@ -198,8 +188,6 @@
         const syncStatus = document.getElementById('syncStatus');
         const copyLinkBtn = document.getElementById('copyLinkBtn');
         const shareLinkSpan = document.getElementById('shareLink');
-        const setupGuide = document.getElementById('setupGuide');
-        const configBtn = document.getElementById('configBtn');
         
         function formatTime(seconds) {
             if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
@@ -233,40 +221,58 @@
             return new Blob([new Uint8Array(byteNumbers)], { type: 'audio/mp3' });
         }
         
-        // 設定 Supabase
-        configBtn.addEventListener('click', () => {
-            const url = prompt('請輸入 Supabase URL（例如：https://xxxxx.supabase.co）:', supabaseUrl);
-            const key = prompt('請輸入 Supabase anon public key:', supabaseKey);
-            if (url && key) {
-                supabaseUrl = url;
-                supabaseKey = key;
-                localStorage.setItem('supabase_url', url);
-                localStorage.setItem('supabase_key', key);
-                setupGuide.style.display = 'none';
-                loadSongsFromCloud();
+        // 自動建立資料表（如果不存在）
+        async function createTableIfNotExists() {
+            try {
+                // 嘗試查詢，如果失敗就建立表格
+                const testResponse = await fetch(`${SUPABASE_URL}/rest/v1/songs?limit=1`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                
+                if (testResponse.status === 404) {
+                    console.log('資料表不存在，嘗試建立...');
+                    // 使用 Supabase 的 SQL API 建立表格（需要 service key，這裡提示使用者）
+                    syncStatus.innerHTML = "⚠️ 需要在 Supabase 執行一次 SQL，請點擊複製指令";
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('檢查表格失敗:', error);
+                return false;
             }
-        });
+        }
         
         // 從雲端載入
         async function loadSongsFromCloud() {
-            if (!supabaseUrl || !supabaseKey) {
-                syncStatus.innerHTML = "⚙️ 請先點擊「設定 Supabase」完成設定";
-                setupGuide.style.display = 'block';
-                return;
-            }
-            
             syncStatus.innerHTML = "☁️ 正在從雲端載入歌曲...";
             try {
-                const response = await fetch(`${supabaseUrl}/rest/v1/songs?select=*`, {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/songs?select=*`, {
                     headers: {
-                        'apikey': supabaseKey,
-                        'Authorization': `Bearer ${supabaseKey}`
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
                     }
                 });
                 
                 if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        throw new Error('API Key 錯誤，請檢查設定');
+                    if (response.status === 404) {
+                        syncStatus.innerHTML = "📦 請先在 Supabase SQL Editor 執行一次建表指令（點擊複製）";
+                        syncStatus.style.cursor = "pointer";
+                        syncStatus.onclick = () => {
+                            const sql = `CREATE TABLE songs (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  blob_data TEXT NOT NULL,
+  size INTEGER,
+  uploader TEXT,
+  date TIMESTAMP
+);`;
+                            navigator.clipboard.writeText(sql);
+                            alert('SQL 已複製！請到 Supabase → SQL Editor 貼上執行');
+                        };
+                        return [];
                     }
                     throw new Error(`HTTP ${response.status}`);
                 }
@@ -287,6 +293,7 @@
                         }
                     }
                     syncStatus.innerHTML = `✅ 已載入 ${songList.length} 首共享歌曲 (點擊重新整理)`;
+                    syncStatus.onclick = () => loadSongsFromCloud();
                 } else {
                     songList = [];
                     syncStatus.innerHTML = `✅ 雲端暫無歌曲！點擊上方區域上傳第一首 MP3 🎵`;
@@ -305,21 +312,20 @@
             } catch (error) {
                 console.error('載入失敗:', error);
                 syncStatus.innerHTML = `⚠️ 載入失敗：${error.message}<br>點擊這裡重試`;
+                syncStatus.onclick = () => loadSongsFromCloud();
                 return [];
             }
         }
         
         // 儲存到雲端
         async function saveSongsToCloud(song) {
-            if (!supabaseUrl || !supabaseKey) return false;
-            
             try {
-                const response = await fetch(`${supabaseUrl}/rest/v1/songs`, {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/songs`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'apikey': supabaseKey,
-                        'Authorization': `Bearer ${supabaseKey}`,
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
                         'Prefer': 'return=minimal'
                     },
                     body: JSON.stringify({
@@ -333,10 +339,10 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
                 
-                syncStatus.innerHTML = `✅ 已同步 ${songList.length} 首歌曲到雲端 (點擊重新整理)`;
                 return true;
             } catch (error) {
                 console.error('同步失敗:', error);
@@ -347,14 +353,12 @@
         
         // 刪除雲端歌曲
         async function deleteSongFromCloud(songId) {
-            if (!supabaseUrl || !supabaseKey) return false;
-            
             try {
-                const response = await fetch(`${supabaseUrl}/rest/v1/songs?id=eq.${songId}`, {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/songs?id=eq.${songId}`, {
                     method: 'DELETE',
                     headers: {
-                        'apikey': supabaseKey,
-                        'Authorization': `Bearer ${supabaseKey}`
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
                     }
                 });
                 return response.ok;
@@ -364,25 +368,15 @@
             }
         }
         
-        // 點擊狀態列可重新整理
-        syncStatus.addEventListener('click', () => {
-            loadSongsFromCloud();
-        });
-        
         // 上傳 MP3
         async function uploadMP3(file) {
-            if (!supabaseUrl || !supabaseKey) {
-                alert('請先點擊「設定 Supabase」完成設定');
-                return;
-            }
-            
             if (!file.type.includes('audio/mp3') && !file.name.endsWith('.mp3')) {
                 alert('請上傳 MP3 檔案');
                 return;
             }
             
             if (file.size > 10 * 1024 * 1024) {
-                alert('檔案太大！Supabase 免費版建議上傳小於 10MB 的檔案');
+                alert('檔案太大！建議上傳小於 10MB 的檔案');
                 return;
             }
             
@@ -412,6 +406,8 @@
                 if (songList.length === 1 && currentSongIndex === -1) {
                     playSong(0);
                 }
+                syncStatus.innerHTML = `✅ 已同步 ${songList.length} 首歌曲到雲端 (點擊重新整理)`;
+                syncStatus.onclick = () => loadSongsFromCloud();
             }
         }
         
@@ -473,6 +469,7 @@
                 }
                 
                 renderSongList();
+                syncStatus.innerHTML = `✅ 已刪除，共 ${songList.length} 首歌曲`;
             } else {
                 alert('刪除失敗，請重試');
             }
@@ -634,17 +631,8 @@
         
         // 初始化
         async function initApp() {
-            if (supabaseUrl && supabaseKey) {
-                setupGuide.style.display = 'none';
-                await loadSongsFromCloud();
-            } else {
-                setupGuide.style.display = 'block';
-                syncStatus.innerHTML = "⚙️ 請先點擊「設定 Supabase」完成設定";
-            }
+            await loadSongsFromCloud();
         }
     </script>
 </body>
 </html>
-
-
-我這個要怎麼用
