@@ -13,8 +13,10 @@
 <!-- 桌面圖標高清 -->
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iI2ZmNjliNCIgcng9IjI0Ii8+PHRleHQgeD0iNjAiIHk9IjcwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKAjDwvdGV4dD48L3N2Zz4=">
 
-<!-- 啟動畫面 Launch Screen -->
-<link rel="apple-touch-startup-image" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTc5IDI1UCI+PHJlY3Qgd2lkdGg9IjExNzkiIGhlaWdodD0iMjU1NiIgZmlsbD0iIzFhMGIxNCIvPjx0ZXh0IHg9IjU4OS41IiB5PSIxMjc4IiBmb250LWZhbWlseT0iTWljcm9zb2Z0IEpoZW5nSGVpIiBmb250LXNpemU9IjcwIiBmaWxsPSIjZmY2OWI0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCI+5ZCr5Zu+6Z+z6Z+z5ZCrPC90ZXh0Pjwvc3ZnPg==">
+<!-- 啟動畫面 Launch Screen（優化安全區域） -->
+<link rel="apple-touch-startup-image" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTc5IDI1NTYiIGZpbGw9IiMxYTBiMTQiPjx0ZXh0IHg9IjU4OS41IiB5PSIxMjc4IiBmb250LWZhbWlseT0iTWljcm9zb2Z0IEpoZW5nSGVpIiBmb250LXNpemU9IjcwIiBmaWxsPSIjZmY2OWI0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCI+5ZCr5Zu+6Z+z6Z+z5ZCrPC90ZXh0Pjwvc3ZnPg==" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)">
+<link rel="apple-touch-startup-image" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTc5IDI1NTYiIGZpbGw9IiMxYTBiMTQiPjx0ZXh0IHg9IjU4OS41IiB5PSIxMjc4IiBmb250LWZhbWlseT0iTWljcm9zb2Z0IEpoZW5nSGVpIiBmb250LXNpemU9IjcwIiBmaWxsPSIjZmY2OWI0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCI+5ZCr5Zu+6Z+z6Z+z5ZCrPC90ZXh0Pjwvc3ZnPg==" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)">
+<link rel="apple-touch-startup-image" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTc5IDI1NTYiIGZpbGw9IiMxYTBiMTQiPjx0ZXh0IHg9IjU4OS41IiB5PSIxMjc4IiBmb250LWZhbWlseT0iTWljcm9zb2Z0IEpoZW5nSGVpIiBmb250LXNpemU9IjcwIiBmaWxsPSIjZmY2OWI0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCI+5ZCr5Zu+6Z+z6Z+z5ZCrPC90ZXh0Pjwvc3ZnPg==" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
 
 <title>🌷 粉粉音樂盒 | 雲端播放器</title>
 <style>
@@ -23,7 +25,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* 🎀 可愛字體優先順序 */
   font-family: 'SF Pro Rounded', 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans CJK TC', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -31,17 +32,14 @@
   outline: none;
 }
 
-/* 讓所有文字更柔和、帶一點夢幻感 */
 body, button, input, .song-name, .player-title, .tab-btn, .login-title, .setting-label, .info-card p {
   letter-spacing: 0.3px;
 }
 
-/* 標題類：加陰影 + 微微發光 */
 .login-title, .app-header h1, .info-card h3 {
   text-shadow: 0 2px 8px rgba(255, 105, 180, 0.25);
 }
 
-/* 主要標題漸層更立體 */
 .app-header h1 {
   font-size: 28px;
   font-weight: 800;
@@ -53,7 +51,6 @@ body, button, input, .song-name, .player-title, .tab-btn, .login-title, .setting
   text-shadow: none;
 }
 
-/* 登入標題更閃亮 */
 .login-title {
   font-size: 34px;
   font-weight: 800;
@@ -64,33 +61,31 @@ body, button, input, .song-name, .player-title, .tab-btn, .login-title, .setting
   letter-spacing: 1.5px;
 }
 
-/* 按鈕文字更可愛 */
 .login-btn, .opt-btn, .tab-btn, .control-btn, .logout-btn {
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 
-/* 歌曲名稱加一點輕柔陰影 */
 .song-name, .player-title {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   font-weight: 650;
 }
 
-/* 說明文字更軟萌 */
 .setting-desc, .upload-sub, .song-uploader, .player-artist {
   font-weight: 500;
   opacity: 0.85;
 }
 
-/* 讓所有文字都不會太銳利 */
 body {
   font-weight: 500;
   font-smoothing: antialiased;
   -webkit-font-smoothing: antialiased;
 }
 
-/* 保留原有所有樣式，只額外加了上述文字美化，以下為原本完整樣式 */
+/* ========== 核心修復：動態安全區域與留白優化 ========== */
 :root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
   --bg-gradient-start: #1a0b14;
   --bg-gradient-end: #2d1a24;
   --card-bg: rgba(45, 25, 35, 0.85);
@@ -138,19 +133,22 @@ html, body {
   background: linear-gradient(145deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
   color: var(--text-primary);
   transition: background 0.3s ease, color 0.2s ease;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  /* 動態安全區域，消除多餘留白 */
+  padding-top: max(8px, var(--safe-top));
+  padding-bottom: 0;
 }
 
 .main-container {
   display: none;
   height: 100%;
   overflow-y: auto;
-  padding: 28px 16px 120px;
+  /* 精簡內邊距，減少頂部空間 */
+  padding: 16px 16px calc(120px + var(--safe-bottom));
   max-width: 700px;
   margin: 0 auto;
 }
 
+/* 其餘樣式完全保留，僅修改上述安全區域相關 */
 .heart {
   position: fixed;
   pointer-events: none;
@@ -186,6 +184,8 @@ html, body {
   align-items: center;
   z-index: 9999;
   transition: opacity 0.5s ease;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
 }
 
 .login-box {
@@ -268,7 +268,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -327,7 +327,7 @@ html, body {
 
 .app-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .app-header p {
@@ -340,7 +340,7 @@ html, body {
 .tab-container {
   display: flex;
   gap: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   background: var(--card-bg);
   padding: 6px;
   border-radius: 60px;
@@ -499,7 +499,7 @@ html, body {
   border-radius: 28px;
   padding: 24px 16px;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   cursor: pointer;
   background: rgba(255, 105, 180, 0.05);
   transition: all 0.25s;
@@ -553,7 +553,7 @@ html, body {
   background: var(--player-bg);
   backdrop-filter: blur(20px);
   padding: 12px 16px;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  padding-bottom: calc(12px + var(--safe-bottom));
   display: flex;
   align-items: center;
   gap: 12px;
@@ -805,7 +805,7 @@ html, body {
 }
 
 @media(max-width: 550px) {
-  .main-container { padding: 28px 12px 120px; }
+  .main-container { padding: 12px 12px calc(120px + var(--safe-bottom)); }
   .player-controls { gap: 3px; }
   .control-btn { width: 34px; height: 34px; font-size: 16px; }
   .control-btn.play-pause { width: 46px; height: 46px; }
@@ -916,7 +916,7 @@ html, body {
   </div>
 </div>
 
-<audio id="audioPlayer"></audio>
+<audio id="audioPlayer">
 
 <script>
 // 全域變數與初始設定（完整保留，功能完全不動）
@@ -936,101 +936,4 @@ let playerArtist = document.getElementById('playerArtist');
 let playerCover = document.getElementById('playerCover');
 let playerCoverIcon = document.getElementById('playerCoverIcon');
 
-function createHeart(x, y) { if (!heartEnabled) return; const h = document.createElement('div'); h.className = 'heart'; h.innerText = ['💖', '🌸', '💓', '💕'][Math.floor(Math.random() * 4)]; h.style.left = x + 'px'; h.style.top = y + 'px'; document.body.appendChild(h); setTimeout(() => h.remove(), 1000); }
-document.addEventListener('click', e => createHeart(e.clientX, e.clientY));
-
-const VALID_USERS = { 'lin0525': 'aa340993', 'ccy1103': 'aa340993' };
-let currentUser = '', isGuest = false;
-const loginContainer = document.getElementById('loginContainer');
-const mainContainer = document.getElementById('mainContainer');
-
-function doLogin(username, isGuestMode) {
-  currentUser = username; isGuest = isGuestMode;
-  loginContainer.style.opacity = '0';
-  setTimeout(() => { loginContainer.style.display = 'none'; mainContainer.style.display = 'block'; document.getElementById('welcomeMsg').innerHTML = isGuestMode ? '🌷 訪客模式 · 僅限瀏覽 🌷' : '🎀 歡迎回來，' + username + ' 🎀'; initApp(); }, 500);
-}
-document.getElementById('loginBtn').onclick = () => { const u = document.getElementById('username').value.trim(), p = document.getElementById('password').value.trim(); if (VALID_USERS[u] && VALID_USERS[u] === p) { localStorage.setItem('savedLogin', JSON.stringify({ username: u })); doLogin(u, false); } else { const em = document.getElementById('errorMsg'); em.style.display = 'block'; setTimeout(() => em.style.display = 'none', 3000); } };
-document.getElementById('guestBtn').onclick = () => doLogin('訪客_' + Math.random().toString(36).substr(2, 6), true);
-document.getElementById('logoutBtn').onclick = () => { localStorage.removeItem('savedLogin'); location.reload(); };
-try { const s = JSON.parse(localStorage.getItem('savedLogin') || 'null'); if (s && VALID_USERS[s.username]) doLogin(s.username, false); } catch (e) { }
-
-const SUPABASE_URL = "https://lhidckkbndtgiaqxjvwa.supabase.co";
-const SUPABASE_KEY = "sb_publishable_T1Od42iFnAD46I0g183xtw_PapAxj6k";
-
-function fmtTime(s) { if (!s || isNaN(s) || !isFinite(s)) return '0:00'; return Math.floor(s / 60) + ':' + (Math.floor(s % 60) < 10 ? '0' : '') + Math.floor(s % 60); }
-function blobToBase64(blob) { return new Promise(res => { const r = new FileReader(); r.onloadend = () => res(r.result.split(',')[1]); r.readAsDataURL(blob); }); }
-function base64ToBlob(b64, type) { const bin = atob(b64), arr = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i); return new Blob([arr], { type: type || 'audio/mp3' }); }
-function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
-
-async function loadCloud() {
-  const statusDiv = document.getElementById('syncStatus');
-  statusDiv.innerText = '☁️ 雲端同步中...';
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/songs`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-    songList.forEach(s => { if (s.url) URL.revokeObjectURL(s.url); });
-    songList = [];
-    for (const s of data) {
-      const blob = base64ToBlob(s.blob_data);
-      songList.push({ id: s.id, name: s.name || '未命名', size: s.size || 0, uploader: s.uploader || '未知', blob, url: URL.createObjectURL(blob), coverUrl: s.cover_data ? `data:image/jpeg;base64,${s.cover_data}` : null, duration: s.duration || 0 });
-    }
-    statusDiv.innerText = `✅ 已載入 ${songList.length} 首歌曲 · 點擊重新同步`;
-    const ud = JSON.parse(localStorage.getItem('music_' + currentUser) || '{"liked":[],"history":[]}');
-    likedSongs = ud.liked || [];
-    playHistory = ud.history || [];
-    renderAll();
-  } catch (e) { statusDiv.innerText = `❌ 同步失敗 · 點擊重試`; songList = []; renderAll(); }
-}
-document.getElementById('syncStatus').addEventListener('click', loadCloud);
-
-function playSong(index) {
-  if (index < 0 || index >= songList.length) return;
-  const s = songList[index];
-  currentSongIndex = index;
-  audio.src = s.url;
-  audio.playbackRate = currentSpeed;
-  audio.volume = 0.7;
-  audio.play().catch(() => { });
-  playPauseBtn.innerText = '⏸️';
-  playerTitle.innerText = s.name;
-  playerArtist.innerText = '🎀 ' + (s.uploader || '未知');
-  if (s.coverUrl) { playerCover.src = s.coverUrl; playerCover.style.display = 'block'; playerCoverIcon.style.display = 'none'; }
-  else { playerCover.style.display = 'none'; playerCoverIcon.style.display = 'flex'; }
-  if (rotateEnabled && !audio.paused) document.querySelector('.player-cover')?.classList.add('rotating');
-  playHistory = [{ id: s.id, name: s.name, time: new Date().toLocaleString('zh-TW') }, ...playHistory.filter(h => h.id !== s.id)].slice(0, 50);
-  if (!isGuest) localStorage.setItem('music_' + currentUser, JSON.stringify({ liked: likedSongs, history: playHistory }));
-  renderAll();
-}
-
-function renderAll() { renderSongs(); renderLiked(); renderHistory(); }
-function renderSongs() { const el = document.getElementById('mySongList'); if (!el) return; el.innerHTML = ''; const list = searchKeyword ? songList.filter(s => s.name.toLowerCase().includes(searchKeyword)) : songList; if (!list.length) { el.innerHTML = '<div class="empty-state">🌷 無歌曲，快去上傳吧！</div>'; return; } list.forEach(s => { const oi = songList.findIndex(x => x.id === s.id); const playing = currentSongIndex === oi; const owner = s.uploader === currentUser && !isGuest; const div = document.createElement('div'); div.className = 'song-item' + (playing ? ' now-playing' : ''); div.innerHTML = (s.coverUrl ? '<img class="song-cover-img" src="' + s.coverUrl + '">' : '<div class="song-cover-img">🌷</div>') + '<div class="song-info"><div class="song-name">' + esc(s.name) + '</div><div class="song-uploader">' + esc(s.uploader || '未知') + ' · ' + fmtSize(s.size) + (s.duration ? ' · ' + fmtTime(s.duration) : '') + '</div></div><div class="action-btns">' + (owner ? '<button class="edit-name-btn">✏️</button>' : '') + '<button class="like-btn' + (likedSongs.includes(s.id) ? ' active' : '') + '">💖</button>' + (owner ? '<button class="delete-song-btn">🗑️</button>' : '') + '</div>'; div.querySelector('.like-btn').onclick = e => { e.stopPropagation(); toggleLike(s.id); }; if (owner) { div.querySelector('.edit-name-btn').onclick = e => { e.stopPropagation(); editSong(s.id); }; div.querySelector('.delete-song-btn').onclick = e => { e.stopPropagation(); deleteSong(s.id); }; } div.onclick = () => playSong(oi); el.appendChild(div); }); }
-function renderLiked() { const el = document.getElementById('likedSongList'); if (!el) return; el.innerHTML = ''; const list = songList.filter(s => likedSongs.includes(s.id)); if (!list.length) { el.innerHTML = '<div class="empty-state">💖 尚無喜愛歌曲</div>'; return; } list.forEach(s => { const idx = songList.findIndex(x => x.id === s.id); const div = document.createElement('div'); div.className = 'song-item' + (currentSongIndex === idx ? ' now-playing' : ''); div.innerHTML = (s.coverUrl ? '<img src="' + s.coverUrl + '" class="song-cover-img">' : '<div class="song-cover-img">💖</div>') + '<div class="song-info"><div class="song-name">' + esc(s.name) + '</div><div class="song-uploader">' + esc(s.uploader || '未知') + '</div></div><button class="like-btn active">💖</button>'; div.querySelector('.like-btn').onclick = () => toggleLike(s.id); div.onclick = () => playSong(idx); el.appendChild(div); }); }
-function renderHistory() { const el = document.getElementById('historyList'); if (!el) return; el.innerHTML = ''; if (!playHistory.length) { el.innerHTML = '<div class="empty-state">📖 無播放記錄</div>'; return; } playHistory.slice(0, 30).forEach(h => { const div = document.createElement('div'); div.className = 'song-item'; div.innerHTML = '<div class="song-cover-img">📖</div><div class="song-info"><div class="song-name">' + esc(h.name) + '</div><div class="song-uploader">' + h.time + '</div></div>'; div.onclick = () => { const i = songList.findIndex(x => x.id === h.id); if (i !== -1) playSong(i); }; el.appendChild(div); }); }
-function toggleLike(id) { likedSongs = likedSongs.includes(id) ? likedSongs.filter(x => x !== id) : [...likedSongs, id]; if (!isGuest) localStorage.setItem('music_' + currentUser, JSON.stringify({ liked: likedSongs, history: playHistory })); renderAll(); }
-async function editSong(id) { const newName = prompt('修改歌曲名稱', songList.find(x => x.id === id)?.name); if (!newName) return; await fetch(`${SUPABASE_URL}/rest/v1/songs?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newName }) }); loadCloud(); }
-async function deleteSong(id) { if (!confirm('確定刪除這首歌曲？')) return; await fetch(`${SUPABASE_URL}/rest/v1/songs?id=eq.${id}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }); loadCloud(); }
-function fmtSize(b) { if (!b) return ''; if (b < 1048576) return (b / 1024).toFixed(1) + ' KB'; return (b / 1048576).toFixed(1) + ' MB'; }
-
-audio.addEventListener('timeupdate', () => { if (!audio.duration) return; progressBar.style.width = (audio.currentTime / audio.duration * 100) + '%'; timeCurrent.innerText = fmtTime(audio.currentTime); timeTotal.innerText = fmtTime(audio.duration); });
-audio.addEventListener('ended', () => { if (autoNextEnabled) { const next = (currentSongIndex + 1) % songList.length; if (next !== currentSongIndex) playSong(next); } });
-playPauseBtn.onclick = () => { if (!songList.length) return; if (audio.paused) { if (!audio.src || currentSongIndex === -1) playSong(0); else audio.play(); playPauseBtn.innerText = '⏸️'; if (rotateEnabled) document.querySelector('.player-cover')?.classList.add('rotating'); } else { audio.pause(); playPauseBtn.innerText = '▶️'; if (rotateEnabled) document.querySelector('.player-cover')?.classList.remove('rotating'); } };
-document.getElementById('prev15Btn').onclick = () => { audio.currentTime = Math.max(0, audio.currentTime - 15); };
-document.getElementById('next15Btn').onclick = () => { audio.currentTime = Math.min(audio.duration, audio.currentTime + 15); };
-document.getElementById('nextTrackBtn').onclick = () => { if (songList.length) playSong((currentSongIndex + 1) % songList.length); };
-progressContainer.addEventListener('click', e => { const rect = progressContainer.getBoundingClientRect(); const percent = (e.clientX - rect.left) / rect.width; if (audio.duration) audio.currentTime = percent * audio.duration; });
-document.querySelectorAll('.tab-btn').forEach(btn => { btn.onclick = () => { activeTab = btn.dataset.tab; document.querySelectorAll('.tab-btn,.tab-content').forEach(el => el.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active'); renderAll(); }; });
-document.getElementById('searchInput').oninput = e => { searchKeyword = e.target.value.toLowerCase(); renderSongs(); };
-
-document.getElementById('toggleHeart').onchange = e => heartEnabled = e.target.checked;
-document.getElementById('toggleRotate').onchange = e => { rotateEnabled = e.target.checked; if (!rotateEnabled) document.querySelector('.player-cover')?.classList.remove('rotating'); };
-document.getElementById('autoNext').onchange = e => autoNextEnabled = e.target.checked;
-document.getElementById('clearHistoryBtn').onclick = () => { playHistory = []; if (!isGuest) localStorage.setItem('music_' + currentUser, JSON.stringify({ liked: likedSongs, history: playHistory })); renderHistory(); };
-document.getElementById('clearLikedBtn').onclick = () => { likedSongs = []; if (!isGuest) localStorage.setItem('music_' + currentUser, JSON.stringify({ liked: likedSongs, history: playHistory })); renderAll(); };
-document.querySelectorAll('.theme-opt, .theme-btn').forEach(btn => { btn.onclick = () => { const theme = btn.dataset.theme; if (theme) setTheme(theme); }; });
-function setTheme(theme) { document.body.classList.remove('light-mode', 'dark-mode'); if (theme === 'light') document.body.classList.add('light-mode'); if (theme === 'dark') document.body.classList.add('dark-mode'); localStorage.setItem('theme', theme); document.querySelectorAll('.theme-btn, .theme-opt').forEach(b => b.classList.toggle('active', b.dataset.theme === theme)); }
-const savedTheme = localStorage.getItem('theme') || 'pink'; setTheme(savedTheme);
-async function initApp() { await loadCloud(); }
-</script>
-</body>
-</html>
+function createHeart(x, y) { if (!heartEnabled) return; const h = document.createElement('div'); h.className = 'heart'; h.innerText = ['💖', '🌸', '💓', '💕'][Math.floor
